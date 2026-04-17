@@ -1,22 +1,33 @@
 import { Box, Typography, Button, Avatar, Stack } from '@mui/material'
 import { useAuth } from '../hooks/useAuth'
+import SearchBar from '../components/SearchBar'
 
 export default function Home() {
   const { user, signInWithLinkedIn, signOut } = useAuth()
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', gap: 3, p: 4 }}>
-      <Typography variant="h3" fontWeight={900}>Ghost Rate</Typography>
-      <Typography variant="h6" color="text.secondary">Know before you apply.</Typography>
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', gap: 4, p: 4 }}>
+      <Box sx={{ textAlign: 'center' }}>
+        <Typography variant="h3" fontWeight={900}>Ghost Rate</Typography>
+        <Typography variant="h6" color="text.secondary" sx={{ mt: 1 }}>
+          Know before you apply.
+        </Typography>
+      </Box>
+
+      <SearchBar />
 
       {user ? (
-        <Stack alignItems="center" gap={2}>
-          <Avatar src={user.user_metadata?.picture || user.user_metadata?.avatar_url} sx={{ width: 48, height: 48 }} />
-          <Typography variant="body1">Welcome, {user.user_metadata?.name || user.user_metadata?.full_name}</Typography>
-          <Button variant="outlined" color="secondary" onClick={signOut}>Sign out</Button>
+        <Stack direction="row" alignItems="center" gap={1.5}>
+          <Avatar src={user.user_metadata?.picture || user.user_metadata?.avatar_url} sx={{ width: 32, height: 32 }} />
+          <Typography variant="body2" color="text.secondary">
+            {user.user_metadata?.name || user.user_metadata?.full_name}
+          </Typography>
+          <Button size="small" variant="text" color="inherit" onClick={signOut} sx={{ color: 'text.secondary' }}>
+            Sign out
+          </Button>
         </Stack>
       ) : (
-        <Button variant="contained" size="large" onClick={signInWithLinkedIn}
+        <Button variant="contained" onClick={signInWithLinkedIn}
           sx={{ backgroundColor: '#0A66C2', '&:hover': { backgroundColor: '#004182' } }}>
           Sign in with LinkedIn
         </Button>
