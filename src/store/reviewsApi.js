@@ -25,6 +25,21 @@ export const reviewsApi = apiSlice.injectEndpoints({
         }
         const { data, error } = await supabase.from('reviews').insert(review).select().single()
         if (error) return { error }
+
+        // Fire moderation async — don't block the user on it
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session?.access_token) {
+          fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/moderate-review`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${session.access_token}`,
+              'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+            },
+            body: JSON.stringify({ review_id: data.id }),
+          }).catch(() => {}) // silent fail — review stays pending if moderation errors
+        }
+
         return { data }
       },
       invalidatesTags: ['Review'],
