@@ -3,8 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom'
 import {
   Box, Typography, Button, Stepper, Step, StepLabel,
   ToggleButtonGroup, ToggleButton, Rating, Alert,
-  TextField, Divider, CircularProgress
+  Divider, CircularProgress, Chip
 } from '@mui/material'
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutlined'
 import { useGetCompanyByDomainQuery } from '../store/companiesApi'
 import { useSubmitReviewMutation } from '../store/reviewsApi'
 import { useAuth } from '../hooks/useAuth'
@@ -12,6 +13,8 @@ import { useAuth } from '../hooks/useAuth'
 const STAGES = [
   { value: 'applied', label: 'Applied' },
   { value: 'phone_screen', label: 'Phone Screen' },
+  { value: 'technical_interview', label: 'Technical Interview' },
+  { value: 'take_home', label: 'Take Home Project' },
   { value: 'final_round', label: 'Final Round' },
   { value: 'offer', label: 'Received Offer' },
 ]
@@ -30,6 +33,42 @@ function YesNo({ label, value, onChange }) {
   )
 }
 
+function DateField({ label, value, onChange, helperText }) {
+  return (
+    <Box>
+      <Typography variant="caption" color="text.secondary" sx={{ mb: 0.5, display: 'block' }}>
+        {label}
+      </Typography>
+      <Box
+        component="input"
+        type="date"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        max={new Date().toISOString().split('T')[0]}
+        sx={{
+          width: '100%',
+          p: 1.75,
+          borderRadius: 1,
+          border: '1px solid',
+          borderColor: 'divider',
+          bgcolor: 'background.paper',
+          color: 'text.primary',
+          fontSize: '1rem',
+          outline: 'none',
+          boxSizing: 'border-box',
+          '&:focus': { borderColor: 'primary.main' },
+          colorScheme: 'dark',
+        }}
+      />
+      {helperText && (
+        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5, display: 'block' }}>
+          {helperText}
+        </Typography>
+      )}
+    </Box>
+  )
+}
+
 export default function SubmitReview() {
   const { domain } = useParams()
   const navigate = useNavigate()
@@ -38,6 +77,7 @@ export default function SubmitReview() {
   const [submitReview, { isLoading }] = useSubmitReviewMutation()
 
   const [step, setStep] = useState(0)
+  const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState(null)
   const [form, setForm] = useState({
     stage: 'applied',
@@ -61,15 +101,35 @@ export default function SubmitReview() {
     </Box>
   )
 
+  if (submitted) return (
+    <Box sx={{ p: 4, maxWidth: 640, mx: 'auto', textAlign: 'center', pt: 10 }}>
+      <CheckCircleOutlineIcon sx={{ fontSize: 64, color: 'primary.main', mb: 2 }} />
+      <Typography variant="h5" fontWeight={800} sx={{ mb: 1 }}>Review submitted</Typography>
+      <Typography color="text.secondary" sx={{ mb: 1 }}>
+        Your review of {company?.name} is pending approval.
+      </Typography>
+      <Typography variant="caption" color="text.secondary" sx={{ mb: 4, display: 'block' }}>
+        Reviews are verified before going public to keep the data trustworthy.
+        Scores appear once a company has 5 approved reviews.
+      </Typography>
+      <Button variant="contained" onClick={() => navigate(`/company/${domain}`)}>
+        Back to {company?.name}
+      </Button>
+    </Box>
+  )
+
   const step0Valid = form.stage && form.application_date && form.last_interaction_date
-  const step1Valid = form.received_acknowledgment !== null && form.communicated_timeline !== null && form.ghosted !== null && form.received_rejection !== null && (form.received_rejection === false || form.rejection_had_feedback !== null)
+  const step1Valid = form.received_acknowledgment !== null
+    && form.communicated_timeline !== null
+    && form.ghosted !== null
+    && form.received_rejection !== null
+    && (form.received_rejection === false || form.rejection_had_feedback !== null)
   const step2Valid = form.overall_score !== null
 
   const handleSubmit = async () => {
     setError(null)
-    const { data: companyData } = await import('../services/supabase').then(({ supabase }) =>
-      supabase.from('companies').select('id').eq('domain', domain).single()
-    )
+    const { supabase } = await import('../services/supabase')
+    const { data: companyData } = await supabase.from('companies').select('id').eq('domain', domain).single()
     const result = await submitReview({
       ...form,
       company_id: companyData.id,
@@ -80,7 +140,7 @@ export default function SubmitReview() {
       setError(result.error.message)
       return
     }
-    navigate(`/company/${domain}?submitted=true`)
+    setSubmitted(true)
   }
 
   return (
@@ -89,9 +149,7 @@ export default function SubmitReview() {
         ← Back to {company?.name || domain}
       </Button>
 
-      <Typography variant="h5" fontWeight={800} sx={{ mb: 1 }}>
-        Rate the hiring process
-      </Typography>
+      <Typography variant="h5" fontWeight={800} sx={{ mb: 1 }}>Rate the hiring process</Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
         {company?.name} — your experience helps others know what to expect
       </Typography>
@@ -105,32 +163,33 @@ export default function SubmitReview() {
       {step === 0 && (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           <Box>
-            <Typography variant="body2" fontWeight={600} sx={{ mb: 1 }}>How far did you get?</Typography>
-            <ToggleButtonGroup exclusive value={form.stage} onChange={(_e, v) => v && set('stage')(v)} fullWidth>
+            <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
+              How far did you get?
+            </Typography>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
               {STAGES.map((s) => (
-                <ToggleButton key={s.value} value={s.value} sx={{ flex: 1, fontSize: '0.75rem' }}>
-                  {s.label}
-                </ToggleButton>
+                <Chip
+                  key={s.value}
+                  label={s.label}
+                  onClick={() => set('stage')(s.value)}
+                  variant={form.stage === s.value ? 'filled' : 'outlined'}
+                  color={form.stage === s.value ? 'primary' : 'default'}
+                  sx={{ cursor: 'pointer' }}
+                />
               ))}
-            </ToggleButtonGroup>
+            </Box>
           </Box>
 
-          <TextField
+          <DateField
             label="Date you applied"
-            type="date"
             value={form.application_date}
-            onChange={(e) => set('application_date')(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-            inputProps={{ max: new Date().toISOString().split('T')[0] }}
+            onChange={set('application_date')}
           />
 
-          <TextField
+          <DateField
             label="Date of last contact from company"
-            type="date"
             value={form.last_interaction_date}
-            onChange={(e) => set('last_interaction_date')(e.target.value)}
-            InputLabelProps={{ shrink: true }}
-            inputProps={{ max: new Date().toISOString().split('T')[0] }}
+            onChange={set('last_interaction_date')}
             helperText="If you never heard back, use your application date"
           />
         </Box>
@@ -165,9 +224,7 @@ export default function SubmitReview() {
 
       {step === 2 && (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, py: 2 }}>
-          <Typography variant="body1" fontWeight={600}>
-            Overall hiring experience
-          </Typography>
+          <Typography variant="body1" fontWeight={600}>Overall hiring experience</Typography>
           <Rating
             value={form.overall_score}
             onChange={(_e, v) => set('overall_score')(v)}
@@ -187,11 +244,7 @@ export default function SubmitReview() {
           {step === 0 ? 'Cancel' : 'Back'}
         </Button>
         {step < 2 ? (
-          <Button
-            variant="contained"
-            onClick={() => setStep(step + 1)}
-            disabled={step === 0 ? !step0Valid : !step1Valid}
-          >
+          <Button variant="contained" onClick={() => setStep(step + 1)} disabled={step === 0 ? !step0Valid : !step1Valid}>
             Next
           </Button>
         ) : (
