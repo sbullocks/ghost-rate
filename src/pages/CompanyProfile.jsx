@@ -1,8 +1,9 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { Box, Typography, Avatar, Button, Skeleton, Divider } from '@mui/material'
-import { useGetCompanyByDomainQuery } from '../store/companiesApi'
+import { useGetCompanyByDomainQuery, useGetCompanyReviewsQuery } from '../store/companiesApi'
 import { useAuth } from '../hooks/useAuth'
 import ScoreCard from '../components/ScoreCard'
+import ReviewCard from '../components/ReviewCard'
 import { getLogoUrl } from '../utils/clearbit'
 
 export default function CompanyProfile() {
@@ -10,6 +11,7 @@ export default function CompanyProfile() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { data: company, isLoading, isError } = useGetCompanyByDomainQuery(domain)
+  const { data: reviews = [] } = useGetCompanyReviewsQuery(company?.id, { skip: !company?.id })
 
   if (isLoading) return (
     <Box sx={{ p: 4, maxWidth: 720, mx: 'auto' }}>
@@ -46,8 +48,15 @@ export default function CompanyProfile() {
 
       <Divider sx={{ my: 4 }} />
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h6" fontWeight={700}>Hiring Experience Reviews</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+        <Typography variant="h6" fontWeight={700}>
+          Hiring Experience Reviews
+          {reviews.length > 0 && (
+            <Typography component="span" variant="body2" color="text.secondary" sx={{ ml: 1 }}>
+              ({reviews.length})
+            </Typography>
+          )}
+        </Typography>
         {user ? (
           <Button variant="contained" onClick={() => navigate(`/review/${domain}`)}>
             Leave a Review
@@ -59,11 +68,13 @@ export default function CompanyProfile() {
         )}
       </Box>
 
-      <Box sx={{ mt: 3 }}>
+      {reviews.length > 0 ? (
+        reviews.map((r) => <ReviewCard key={r.id} review={r} />)
+      ) : (
         <Typography color="text.secondary" variant="body2" sx={{ textAlign: 'center', py: 4 }}>
-          Reviews will appear here once approved.
+          No approved reviews yet. Be the first.
         </Typography>
-      </Box>
+      )}
     </Box>
   )
 }
