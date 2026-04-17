@@ -63,7 +63,7 @@ export default function SearchBar() {
               endAdornment: (
                 <>
                   {isFetching && <CircularProgress size={16} />}
-                  {params.InputProps.endAdornment}
+                  {params.InputProps?.endAdornment}
                 </>
               ),
             }}
