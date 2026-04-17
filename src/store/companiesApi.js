@@ -21,13 +21,12 @@ export const companiesApi = apiSlice.injectEndpoints({
 
     getCompanyByDomain: builder.query({
       queryFn: async (domain) => {
-        const { data, error } = await supabase
-          .from('company_scores')
-          .select('*')
-          .eq('domain', domain)
-          .single()
+        const [{ data: company, error }, { data: score }] = await Promise.all([
+          supabase.from('companies').select('*').eq('domain', domain).single(),
+          supabase.from('company_scores').select('*').eq('domain', domain).single(),
+        ])
         if (error) return { error }
-        return { data }
+        return { data: { ...company, ...score } }
       },
       providesTags: (_r, _e, domain) => [{ type: 'Company', id: domain }],
     }),
