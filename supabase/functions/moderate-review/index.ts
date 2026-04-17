@@ -13,19 +13,26 @@ serve(async (req) => {
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) return new Response('Unauthorized', { status: 401, headers: corsHeaders })
 
-    const supabase = createClient(
+    // User client — verifies the JWT via RLS
+    const userClient = createClient(
       Deno.env.get('SUPABASE_URL')!,
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+      Deno.env.get('SUPABASE_ANON_KEY')!,
+      { global: { headers: { Authorization: authHeader } } }
     )
 
-    const token = authHeader.replace('Bearer ', '')
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+    const { data: { user }, error: authError } = await userClient.auth.getUser()
     if (authError || !user) return new Response('Unauthorized', { status: 401, headers: corsHeaders })
 
     const { review_id } = await req.json()
     if (!review_id) return new Response('Missing review_id', { status: 400, headers: corsHeaders })
 
-    const { data: review, error: reviewError } = await supabase
+    // Admin client — bypasses RLS for the update
+    const adminClient = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    )
+
+    const { data: review, error: reviewError } = await adminClient
       .from('reviews')
       .select('*')
       .eq('id', review_id)
@@ -49,7 +56,7 @@ serve(async (req) => {
           content: `You are a content moderator for a job candidate review platform. Respond with ONLY valid JSON: {"status":"approved","reason":"..."} or {"status":"flagged","reason":"..."}.
 
 Flag ONLY if: spam, clearly coordinated fake attack, or inappropriate content.
-Approve if: genuine hiring experience regardless of whether it is positive or negative.
+Approve if: genuine hiring experience regardless of whether positive or negative.
 
 Submission:
 - Stage: ${review.stage}
@@ -73,7 +80,7 @@ Submission:
       // Claude response unparseable — default to approved
     }
 
-    await supabase
+    await adminClient
       .from('reviews')
       .update({ moderation_status: result.status })
       .eq('id', review_id)
