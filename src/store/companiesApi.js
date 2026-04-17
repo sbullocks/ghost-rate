@@ -26,7 +26,7 @@ export const companiesApi = apiSlice.injectEndpoints({
           supabase.from('company_scores').select('*').eq('domain', domain).single(),
         ])
         if (error) return { error }
-        return { data: { ...company, ...score } }
+        return { data: { ...company, ...(score ?? {}) } }
       },
       providesTags: (_r, _e, domain) => [{ type: 'Company', id: domain }],
     }),
