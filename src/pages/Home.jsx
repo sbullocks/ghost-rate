@@ -11,8 +11,8 @@ export default function Home() {
 
       {user ? (
         <Stack alignItems="center" gap={2}>
-          <Avatar src={user.user_metadata?.avatar_url} sx={{ width: 48, height: 48 }} />
-          <Typography variant="body1">Welcome, {user.user_metadata?.full_name}</Typography>
+          <Avatar src={user.user_metadata?.picture || user.user_metadata?.avatar_url} sx={{ width: 48, height: 48 }} />
+          <Typography variant="body1">Welcome, {user.user_metadata?.name || user.user_metadata?.full_name}</Typography>
           <Button variant="outlined" color="secondary" onClick={signOut}>Sign out</Button>
         </Stack>
       ) : (
