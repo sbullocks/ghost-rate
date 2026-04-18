@@ -21,7 +21,7 @@ export default function SearchBar() {
   const [createCompany, { isLoading: isCreating }] = useCreateCompanyMutation()
 
   const handleSelect = (_e, company) => {
-    if (company) navigate(`/company/${company.domain}`)
+    if (company && typeof company === 'object') navigate(`/company/${company.domain}`)
   }
 
   const handleAdd = async () => {
@@ -39,24 +39,7 @@ export default function SearchBar() {
         loading={isFetching}
         onInputChange={(_e, val) => { setInput(val); setAddMode(false) }}
         onChange={handleSelect}
-        noOptionsText={
-          input.length >= 2 ? (
-            <Box>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                No results for "{input}"
-              </Typography>
-              {user ? (
-                <Button size="small" variant="outlined" onClick={() => setAddMode(true)}>
-                  Add "{input}" as a new company
-                </Button>
-              ) : (
-                <Typography variant="caption" color="text.secondary">
-                  Sign in to add a new company
-                </Typography>
-              )}
-            </Box>
-          ) : 'Type at least 2 characters to search'
-        }
+        noOptionsText={null}
         renderOption={(props, option) => (
           <Box component="li" {...props} sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
             <Avatar src={getLogoUrl(option.domain)} sx={{ width: 28, height: 28 }} variant="rounded" />
@@ -83,6 +66,23 @@ export default function SearchBar() {
           />
         )}
       />
+
+      {input.length >= 2 && !isFetching && results.length === 0 && !addMode && (
+        <Box sx={{ mt: 1.5, p: 2, borderRadius: 1, border: '1px solid', borderColor: 'divider' }}>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            No results for "{input}"
+          </Typography>
+          {user ? (
+            <Button size="small" variant="outlined" onClick={() => setAddMode(true)}>
+              Add "{input}" as a new company
+            </Button>
+          ) : (
+            <Typography variant="caption" color="text.secondary">
+              Sign in to add a new company
+            </Typography>
+          )}
+        </Box>
+      )}
 
       {addMode && (
         <Box sx={{ mt: 2, display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap' }}>
