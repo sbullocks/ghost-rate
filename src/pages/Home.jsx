@@ -6,9 +6,9 @@ export default function Home() {
   const { user, signInWithLinkedIn, signOut } = useAuth()
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', gap: 4, p: 4 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', gap: 4, p: { xs: 2, sm: 4 } }}>
       <Box sx={{ textAlign: 'center' }}>
-        <Typography variant="h3" fontWeight={900}>Ghost Rate</Typography>
+        <Typography variant="h3" fontWeight={900} sx={{ fontSize: { xs: '2rem', sm: '3rem' } }}>Ghost Rate</Typography>
         <Typography variant="h6" color="text.secondary" sx={{ mt: 1 }}>
           Know before you apply.
         </Typography>

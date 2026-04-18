@@ -27,7 +27,7 @@ export default function CompanyProfile() {
   )
 
   return (
-    <Box sx={{ p: 4, maxWidth: 720, mx: 'auto' }}>
+    <Box sx={{ p: { xs: 2, sm: 4 }, maxWidth: 720, mx: 'auto' }}>
       <Button onClick={() => navigate('/')} size="small" sx={{ mb: 3, color: 'text.secondary' }}>
         ← Back to search
       </Button>
@@ -36,10 +36,10 @@ export default function CompanyProfile() {
         <Avatar
           src={getLogoUrl(company.domain)}
           variant="rounded"
-          sx={{ width: 64, height: 64, bgcolor: 'background.paper' }}
+          sx={{ width: { xs: 48, sm: 64 }, height: { xs: 48, sm: 64 }, bgcolor: 'background.paper', flexShrink: 0 }}
         />
         <Box>
-          <Typography variant="h4" fontWeight={800}>{company.name}</Typography>
+          <Typography variant="h4" fontWeight={800} sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>{company.name}</Typography>
           <Typography variant="body2" color="text.secondary">{company.domain}</Typography>
         </Box>
       </Box>
@@ -48,7 +48,7 @@ export default function CompanyProfile() {
 
       <Divider sx={{ my: 4 }} />
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, flexDirection: { xs: 'column', sm: 'row' }, gap: 2, mb: 3 }}>
         <Typography variant="h6" fontWeight={700}>
           Hiring Experience Reviews
           {reviews.length > 0 && (

@@ -72,7 +72,7 @@ export default function SearchBar() {
       />
 
       {addMode && (
-        <Box sx={{ mt: 2, display: 'flex', gap: 1.5, alignItems: 'center' }}>
+        <Box sx={{ mt: 2, display: 'flex', gap: 1.5, alignItems: 'center', flexWrap: 'wrap' }}>
           <TextField
             size="small"
             placeholder="Company website (e.g. apple.com)"

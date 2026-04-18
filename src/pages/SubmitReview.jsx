@@ -150,7 +150,7 @@ export default function SubmitReview() {
   }
 
   return (
-    <Box sx={{ p: 4, maxWidth: 640, mx: 'auto' }}>
+    <Box sx={{ p: { xs: 2, sm: 4 }, maxWidth: 640, mx: 'auto' }}>
       <Button onClick={() => navigate(`/company/${domain}`)} size="small" sx={{ mb: 3, color: 'text.secondary' }}>
         ← Back to {company?.name || domain}
       </Button>
@@ -160,7 +160,7 @@ export default function SubmitReview() {
         {company?.name} — your experience helps others know what to expect
       </Typography>
 
-      <Stepper activeStep={step} sx={{ mb: 4 }}>
+      <Stepper activeStep={step} alternativeLabel sx={{ mb: 4 }}>
         {STEPS.map((label) => <Step key={label}><StepLabel>{label}</StepLabel></Step>)}
       </Stepper>
 
