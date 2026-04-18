@@ -36,8 +36,10 @@ export default function CompanyProfile() {
         <Avatar
           src={getLogoUrl(company.domain)}
           variant="rounded"
-          sx={{ width: { xs: 48, sm: 64 }, height: { xs: 48, sm: 64 }, bgcolor: 'background.paper', flexShrink: 0 }}
-        />
+          sx={{ width: { xs: 48, sm: 64 }, height: { xs: 48, sm: 64 }, bgcolor: 'primary.main', flexShrink: 0, fontSize: '1.5rem', fontWeight: 800 }}
+        >
+          {company.name[0]}
+        </Avatar>
         <Box>
           <Typography variant="h4" fontWeight={800} sx={{ fontSize: { xs: '1.5rem', sm: '2.125rem' } }}>{company.name}</Typography>
           <Typography variant="body2" color="text.secondary">{company.domain}</Typography>
