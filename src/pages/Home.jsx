@@ -108,7 +108,7 @@ export default function Home() {
           </Button>
         </Stack>
       ) : (
-        <Box sx={{ textAlign: 'center' }}>
+        <Box sx={{ textAlign: 'center', width: '100%', maxWidth: 560 }}>
           <Button
             variant="contained"
             onClick={signInWithLinkedIn}
@@ -117,6 +117,8 @@ export default function Home() {
               backgroundColor: '#0A66C2',
               '&:hover': { backgroundColor: '#004182' },
               px: 4,
+              display: 'block',
+              mx: 'auto',
             }}
           >
             Sign in with LinkedIn to leave a review
@@ -124,8 +126,7 @@ export default function Home() {
           <Typography
             variant="caption"
             color="text.secondary"
-            display="block"
-            sx={{ mt: 1.5 }}
+            sx={{ mt: 1.5, display: 'block' }}
           >
             LinkedIn sign-in keeps reviews tied to real hiring experiences.
           </Typography>

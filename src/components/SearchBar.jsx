@@ -5,10 +5,12 @@ import {
   CircularProgress, Button
 } from '@mui/material'
 import { useSearchCompaniesQuery, useCreateCompanyMutation } from '../store/companiesApi'
+import { useAuth } from '../hooks/useAuth'
 import { getLogoUrl } from '../utils/clearbit'
 
 export default function SearchBar() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [input, setInput] = useState('')
   const [addMode, setAddMode] = useState(false)
   const [newDomain, setNewDomain] = useState('')
@@ -43,9 +45,15 @@ export default function SearchBar() {
               <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                 No results for "{input}"
               </Typography>
-              <Button size="small" variant="outlined" onClick={() => setAddMode(true)}>
-                Add "{input}" as a new company
-              </Button>
+              {user ? (
+                <Button size="small" variant="outlined" onClick={() => setAddMode(true)}>
+                  Add "{input}" as a new company
+                </Button>
+              ) : (
+                <Typography variant="caption" color="text.secondary">
+                  Sign in to add a new company
+                </Typography>
+              )}
             </Box>
           ) : 'Type at least 2 characters to search'
         }
