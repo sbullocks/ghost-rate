@@ -39,10 +39,15 @@ export default function SearchBar() {
         onChange={handleSelect}
         noOptionsText={
           input.length >= 2 ? (
-            <Button size="small" onClick={() => setAddMode(true)}>
-              Add "{input}" as a new company
-            </Button>
-          ) : 'Type to search'
+            <Box>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                No results for "{input}"
+              </Typography>
+              <Button size="small" variant="outlined" onClick={() => setAddMode(true)}>
+                Add "{input}" as a new company
+              </Button>
+            </Box>
+          ) : 'Type at least 2 characters to search'
         }
         renderOption={(props, option) => (
           <Box component="li" {...props} sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
