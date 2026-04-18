@@ -11,7 +11,7 @@ export default function CompanyProfile() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { data: company, isLoading, isError } = useGetCompanyByDomainQuery(domain)
-  const { data: reviews = [] } = useGetCompanyReviewsQuery(company?.id, { skip: !company?.id, refetchOnMountOrArgChange: true })
+  const { data: reviews = [], isLoading: reviewsLoading } = useGetCompanyReviewsQuery(company?.id, { skip: !company?.id, refetchOnMountOrArgChange: true })
 
   if (isLoading) return (
     <Box sx={{ p: 4, maxWidth: 720, mx: 'auto' }}>
@@ -68,11 +68,16 @@ export default function CompanyProfile() {
         )}
       </Box>
 
-      {reviews.length > 0 ? (
+      {reviewsLoading ? (
+        <Box>
+          <Skeleton variant="rectangular" height={180} sx={{ borderRadius: 2, mb: 2 }} />
+          <Skeleton variant="rectangular" height={180} sx={{ borderRadius: 2 }} />
+        </Box>
+      ) : reviews.length > 0 ? (
         reviews.map((r) => <ReviewCard key={r.id} review={r} />)
       ) : (
         <Typography color="text.secondary" variant="body2" sx={{ textAlign: 'center', py: 4 }}>
-          No approved reviews yet. Be the first.
+          No reviews yet. Be the first.
         </Typography>
       )}
     </Box>

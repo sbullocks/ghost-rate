@@ -143,7 +143,12 @@ export default function SubmitReview() {
       rejection_had_feedback: form.received_rejection ? form.rejection_had_feedback : false,
     })
     if (result.error) {
-      setError(result.error.message)
+      const msg = result.error.message || ''
+      setError(
+        msg.includes('reviews_user_id_company_id_key')
+          ? "You've already submitted a review for this company."
+          : msg
+      )
       return
     }
     setSubmitted(true)
@@ -246,11 +251,11 @@ export default function SubmitReview() {
       )}
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 4 }}>
-        <Button onClick={() => step === 0 ? navigate(`/company/${domain}`) : setStep(step - 1)} disabled={isLoading}>
+        <Button onClick={() => { setError(null); step === 0 ? navigate(`/company/${domain}`) : setStep(step - 1) }} disabled={isLoading}>
           {step === 0 ? 'Cancel' : 'Back'}
         </Button>
         {step < 2 ? (
-          <Button variant="contained" onClick={() => setStep(step + 1)} disabled={step === 0 ? !step0Valid : !step1Valid}>
+          <Button variant="contained" onClick={() => { setError(null); setStep(step + 1) }} disabled={step === 0 ? !step0Valid : !step1Valid}>
             Next
           </Button>
         ) : (
