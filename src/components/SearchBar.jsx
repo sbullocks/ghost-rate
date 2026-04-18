@@ -27,7 +27,7 @@ export default function SearchBar() {
   const handleAdd = async () => {
     if (!input.trim() || !newDomain.trim()) return
     const result = await createCompany({ name: input.trim(), domain: newDomain.trim() })
-    if (result.data) navigate(`/company/${result.data.domain}`)
+    if (result.data) navigate(`/review/${result.data.domain}`)
   }
 
   return (
