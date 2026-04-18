@@ -37,7 +37,7 @@ export const companiesApi = apiSlice.injectEndpoints({
           .from('reviews')
           .select('*')
           .eq('company_id', companyId)
-          .eq('moderation_status', 'approved')
+          .in('moderation_status', ['approved', 'pending'])
           .order('created_at', { ascending: false })
         if (error) return { error }
         return { data }

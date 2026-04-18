@@ -11,7 +11,7 @@ export default function CompanyProfile() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const { data: company, isLoading, isError } = useGetCompanyByDomainQuery(domain)
-  const { data: reviews = [] } = useGetCompanyReviewsQuery(company?.id, { skip: !company?.id })
+  const { data: reviews = [] } = useGetCompanyReviewsQuery(company?.id, { skip: !company?.id, refetchOnMountOrArgChange: true })
 
   if (isLoading) return (
     <Box sx={{ p: 4, maxWidth: 720, mx: 'auto' }}>

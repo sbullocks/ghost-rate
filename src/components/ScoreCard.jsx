@@ -14,11 +14,11 @@ function Stat({ label, value, tooltip, color }) {
 }
 
 export default function ScoreCard({ data }) {
-  if (!data || data.review_count < 5) {
+  if (!data || !data.review_count || data.review_count < 5) {
     return (
       <Box sx={{ p: 3, borderRadius: 2, bgcolor: 'background.paper', textAlign: 'center' }}>
         <Typography color="text.secondary" variant="body2">
-          Not enough reviews yet. Be the first to rate this company's hiring process.
+          Score summary unlocks after 5 reviews.
         </Typography>
       </Box>
     )

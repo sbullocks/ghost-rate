@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
   Box, Typography, Button, Stepper, Step, StepLabel,
@@ -101,6 +101,12 @@ export default function SubmitReview() {
     </Box>
   )
 
+  useEffect(() => {
+    if (!submitted) return
+    const t = setTimeout(() => navigate(`/company/${domain}`), 2000)
+    return () => clearTimeout(t)
+  }, [submitted, domain, navigate])
+
   if (submitted) return (
     <Box sx={{ p: 4, maxWidth: 640, mx: 'auto', textAlign: 'center', pt: 10 }}>
       <CheckCircleOutlineIcon sx={{ fontSize: 64, color: 'primary.main', mb: 2 }} />
@@ -112,7 +118,7 @@ export default function SubmitReview() {
         Reviews are verified before going public to keep the data trustworthy.
         Scores appear once a company has 5 approved reviews.
       </Typography>
-      <Button variant="contained" onClick={() => navigate(`/company/${domain}`)}>
+      <Button onClick={() => navigate(`/company/${domain}`)}>
         Back to {company?.name}
       </Button>
     </Box>

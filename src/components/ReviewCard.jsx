@@ -26,7 +26,12 @@ export default function ReviewCard({ review }) {
   return (
     <Box sx={{ p: 2.5, borderRadius: 2, bgcolor: 'background.paper', mb: 2 }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1.5 }}>
-        <Chip label={STAGE_LABELS[review.stage] || review.stage} size="small" variant="outlined" />
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+          <Chip label={STAGE_LABELS[review.stage] || review.stage} size="small" variant="outlined" />
+          {review.moderation_status === 'pending' && (
+            <Chip label="Pending approval" size="small" color="warning" variant="outlined" />
+          )}
+        </Box>
         <Typography variant="caption" color="text.secondary">{date}</Typography>
       </Box>
 

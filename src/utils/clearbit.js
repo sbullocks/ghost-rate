@@ -1,2 +1,2 @@
 export const getLogoUrl = (domain) =>
-  domain ? `https://logo.clearbit.com/${domain}` : null
+  domain ? `https://www.google.com/s2/favicons?domain=${domain}&sz=64` : null
