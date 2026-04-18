@@ -47,6 +47,9 @@ export default function ReviewCard({ review }) {
         <Fact label="Rejection had feedback" value={review.rejection_had_feedback ? 'Yes' : 'No'} />
       )}
       <Fact label="Interview rounds" value={review.rounds_count === 4 ? '4+' : String(review.rounds_count)} />
+      {review.hired !== null && review.hired !== undefined && (
+        <Fact label="Hired" value={review.hired ? 'Yes' : 'No'} />
+      )}
     </Box>
   )
 }

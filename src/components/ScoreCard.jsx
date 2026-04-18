@@ -30,6 +30,9 @@ export default function ScoreCard({ data }) {
       <Stat label="Ghost Rate" value={`${data.ghost_rate}%`} tooltip="% of candidates who were ghosted" color={data.ghost_rate > 50 ? 'error.main' : 'success.main'} />
       <Stat label="Acknowledged" value={`${data.acknowledgment_rate}%`} tooltip="% who received application acknowledgment" />
       <Stat label="Gave Feedback" value={`${data.feedback_rate}%`} tooltip="% of rejections that included real feedback" />
+      {data.hire_rate !== null && data.hire_rate !== undefined && (
+        <Stat label="Hire Rate" value={`${data.hire_rate}%`} tooltip="% of reviewers who reported being hired" color={data.hire_rate > 20 ? 'success.main' : 'text.primary'} />
+      )}
       <Box sx={{ textAlign: 'center' }}>
         <Chip label={`${data.review_count} reviews`} size="small" variant="outlined" />
       </Box>

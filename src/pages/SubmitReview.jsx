@@ -89,6 +89,7 @@ export default function SubmitReview() {
     rounds_count: 1,
     received_rejection: null,
     rejection_had_feedback: null,
+    hired: null,
     overall_score: null,
   })
 
@@ -221,6 +222,17 @@ export default function SubmitReview() {
               <YesNo label="Did the rejection include real feedback?" value={form.rejection_had_feedback} onChange={set('rejection_had_feedback')} />
             </>
           )}
+          <Divider />
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1.5 }}>
+            <Box>
+              <Typography variant="body2">Were you hired?</Typography>
+              <Typography variant="caption" color="text.secondary">Optional</Typography>
+            </Box>
+            <ToggleButtonGroup exclusive value={form.hired} onChange={(_e, v) => v !== null && set('hired')(v)} size="small">
+              <ToggleButton value={true} sx={{ px: 2.5 }}>Yes</ToggleButton>
+              <ToggleButton value={false} sx={{ px: 2.5 }}>No</ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
           <Divider sx={{ mt: 1 }} />
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: 1.5 }}>
             <Typography variant="body2">How many interview rounds?</Typography>

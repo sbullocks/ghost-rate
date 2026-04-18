@@ -66,7 +66,8 @@ Submission:
 - Ghosted: ${review.ghosted}
 - Received rejection: ${review.received_rejection}
 - Rejection had feedback: ${review.rejection_had_feedback}
-- Rounds: ${review.rounds_count}`
+- Rounds: ${review.rounds_count}
+- Hired: ${review.hired === null ? 'Not answered' : review.hired}`
         }]
       })
     })
